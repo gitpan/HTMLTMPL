@@ -14,6 +14,7 @@
 #			March 2000 - 1.20 - Allow for invisible templates.
 #			March 2001 - 1.30 - Added to CPAN
 #			March 2001 - 1.31 - Added getAllTokens, and srcString methods.
+#			Sept. 2001 - 1.32 - Reset $/ to prior value (courtesy)
 #
 
 package HTMLTMPL;
@@ -24,7 +25,7 @@ use Carp;
 
 no strict 'refs';
 
-$HTMLTMPL::VERSION = '1.31';
+$HTMLTMPL::VERSION = '1.32';
 
 sub new()
 {
@@ -44,12 +45,14 @@ sub src()
     my $self = shift;
     my $src = shift;
 
+	my $tmp = $/;
 	undef $/;
 	open(HTML, "<$src") || bailout("Cannot open html template file!<br>$src");
 	my $tmplString = <HTML>;
 	close HTML;
 
 	srcString($self, $tmplString);
+	$/ = $tmp;
 }
 
 # If the template is within a string rather than a file, use this method to
@@ -90,19 +93,6 @@ sub parseSegment()
 
 		$token =~ s/\n$//g;			# chomp $token (chomp bust as $/ undef'd)
 
-		# SPECIAL PRICE PROCESSING!
-		#
-		# Ensure '/' are replaced with '_' in token name.
-		#
-		if ($token =~ /pr\((\w+\/\w+)\)/) {
-			$token =~ s:/:_:g;
-		}
-		if ($token =~ /prd\((\w+\/\w+)\)/) {
-			$token =~ s:/:_:g;
-		}
-
-		# END OF SPECIAL PRICE
-		# 
 		push @segments, $padding;
 
 		$pos = pos $tmplString;
@@ -267,7 +257,7 @@ sub mergeData()
 	my $repeating = $leg->{'_C__REPEAT__'};
 	my $entries = 1;
 
-	my $htmlGen;							# Generated html to be output.
+	my $htmlGen = '';						# Generated html to be output.
 
 	if ($repeating)
 	{
