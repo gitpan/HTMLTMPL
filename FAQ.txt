@@ -1,0 +1,82 @@
+                      Bilstone HTML Template Parser
+                      =============================
+
+
+What is it for?
+---------------
+
+It is intended to break the task of outputing html tags from the cgi. This
+frees the cgi to concentrate on getting hold of data from a database, file, etc.
+A template of html is used instead which means that this can be created and
+maintained using standard web page tools (Frontpage, Hot Metal, etc).
+
+
+How do I install it?
+--------------------
+
+Copy HTMLTMPL.pm to a standard perl include directory (use perl -V to find
+out where these are on your installation).
+
+
+How do I use it?
+----------------
+
+Please see the HOWTO.txt documentation, and the files in the 'examples'
+directory.
+
+
+Where can I get the latest version?
+-----------------------------------
+
+http://freeweb.ftech.net/bilstone/parser.html
+
+
+What about setting cookies?
+---------------------------
+
+The 'output' function can be given a variable number of strings. Each of these
+will be output before the parsed html, and with a blank line seperator. These
+therefore are the http headers (where the set-cookie:...) would go.
+
+eg:
+
+$www = new CGI;
+$cookie = $www->cookie(-name=>'userid',
+                        -value=>'freddy',
+                        -path=>'/',
+                        -domain=>'.bilstone.co.uk');
+
+$tmpl = new HTMLTMPL;
+$tmpl->src('mainmenu.html');
+
+$tmpl->output("Set-cookie: $cookie;", "Content-type: text/html");
+
+
+Is there a charge for using this module?
+----------------------------------------
+
+No. But if you let me know you are using it I would appreciate it. :-)
+
+
+Where do I report bugs, requests for new features, etc?
+-------------------------------------------------------
+
+To the author (ian@bilstone.co.uk).
+
+
+Is there a mailing list?
+------------------------
+
+There is no demand for it yet. If demand increases one will be created.
+
+
+Can it handle templates within templates?
+-----------------------------------------
+
+Yes. The version 1.10 release incorporated a function called 'htmlString'. This
+returns the html generated as a string rather than sending it to stdout.
+This allows sub templates (or inner templates) to be supported.
+
+
+Ian Steel.	(ian@bilstone.co.uk)
+April 1999
