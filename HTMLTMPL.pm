@@ -12,7 +12,8 @@
 #			April 1999 - First cut
 #			September 1999 - Added strict.
 #			March 2000 - 1.20 - Allow for invisible templates.
-#			March 2001 - 1.30 - Tidied up for CPAN upload.
+#			March 2001 - 1.30 - Added to CPAN
+#			March 2001 - 1.31 - Added getAllTokens, and srcString methods.
 #
 
 package HTMLTMPL;
@@ -23,7 +24,7 @@ use Carp;
 
 no strict 'refs';
 
-$HTMLTMPL::VERSION = '1.30';
+$HTMLTMPL::VERSION = '1.31';
 
 sub new()
 {
@@ -35,27 +36,36 @@ sub new()
 
 sub src()
 {
-	if ($#_ != 1)
-	{
-		bailout("Error! template function requires a single parameter\n");
-	}
+    if ($#_ != 1)
+    {
+        bailout("Error! template function requires a single parameter\n");
+    }
 
-	my $self = shift;
-	my $src = shift;
+    my $self = shift;
+    my $src = shift;
 
-	$self->{'_C__REPEAT__'} = 0;	# Not a repeating block as this is the
-									# main html page.
-
-	my $allToks = [];
-
-	# Parse the html into an array.
-	#
 	undef $/;
 	open(HTML, "<$src") || bailout("Cannot open html template file!<br>$src");
 	my $tmplString = <HTML>;
 	close HTML;
 
-	parseSegment($self, $allToks, $tmplString);
+	srcString($self, $tmplString);
+}
+
+# If the template is within a string rather than a file, use this method to
+#	populate the template object.
+#
+sub srcString()
+{
+    my $self = shift;
+    my $src = shift;
+
+    $self->{'_C__REPEAT__'} = 0;    # Not a repeating block as this is the
+                                    # main html page.
+
+    my $allToks = [];
+
+	parseSegment($self, $allToks, $src);
 
 	$self->{'_C__TOKLIST__'} = $allToks;	# Array of all tokens.
 }
@@ -335,8 +345,25 @@ sub mergeData()
 sub listAllTokens()
 {
 	my $self = shift;
-
 	return $self->{'_C__TOKLIST__'};
+}
+
+# If called in a scalar context, returns a comma seperated list of tokens
+#	found within the template.
+# If called in array context, returns array of tokens found within the
+#	template.
+#
+sub getAllTokens()
+{
+	my $self = shift;
+
+	if (wantarray) {
+		return @{$self->{'_C__TOKLIST__'}};
+	}
+
+	my $ret = ",";
+	map { $ret .= "$_,"; } @{$self->{'_C__TOKLIST__'}};
+	return $ret;
 }
 
 sub dumpAll()
@@ -436,7 +463,7 @@ sub bailout()
 content-type: text/html
 
 <html><head></head>
-<body bgcolor=pink>
+<body bgcolor=red>
 <p>
 <font color=white>
 <h3>Template Error!</h3>
@@ -565,6 +592,11 @@ src($)
 
 The single parameter specifies the name of the template file to use.
 
+srcString($)
+
+If the template is within a string rather than a file, use this method to
+populate the template object.
+
 output(@)
 
 Merges the data already passed to the HTMLTMPL instance with the template file
@@ -582,6 +614,13 @@ listAllTokens()
 
 Returns an array ref. The array contains the names of all tokens found within
 the template specifed to src() method.
+
+getAlltokens()
+
+If called in a scalar context, returns a comma seperated list of tokens
+found within the template.
+If called in array context, returns array of tokens found within the
+template.
 
 dumpAll()
 
@@ -813,17 +852,7 @@ The code :
 
  March 1999	Version 0.90	beta
  March 2000	Version 1.20	Added invisible template blocks
- March 2001	Version 1.30	Released to CPAN
 
 =head1 AUTHOR
 
 Ian Steel. ian@bilstone.co.uk
-
-
-=head1 COPYRIGHT
-
- HTMLTMPL.pm is Copyright (c) 2001, by Ian Steel (ian@bilstone.co.uk)
- All rights reserved. You may distribute this code under the terms
- of either the GNU General Public License or the Artistic License,
- as specified in the Perl README file.
-

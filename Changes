@@ -1,6 +1,7 @@
                       Bilstone HTML Template Parser
                       =============================
 
+26th March 2001		1.31	Added getAllTokens and srcString methods.
 8th March 2001		1.30	Released to CPAN
 8th May 2000		1.11	Major speed improvement
 25th February 2000	1.10	Added function 'htmlString'
