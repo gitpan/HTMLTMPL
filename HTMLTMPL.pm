@@ -1,11 +1,11 @@
 # Bilstone html template parser
 #
 #		September 1999
-#		Version 1.00	production
+#		Version 1.33	production
 #		Author	Ian Steel	(ian@bilstone.co.uk)
 #
 #		For latest releases, documentation, faqs, etc see the homepage at
-#			http://freeweb.ftech.net/bilstone/htmltmpl.html
+#			http://www.bilstone.co.uk/parser
 #
 #		History:
 #
@@ -15,6 +15,7 @@
 #			March 2001 - 1.30 - Added to CPAN
 #			March 2001 - 1.31 - Added getAllTokens, and srcString methods.
 #			Sept. 2001 - 1.32 - Reset $/ to prior value (courtesy)
+#			Sept. 2001 - 1.33 - Corrected operation of Invisible blocks.
 #
 
 package HTMLTMPL;
@@ -25,7 +26,7 @@ use Carp;
 
 no strict 'refs';
 
-$HTMLTMPL::VERSION = '1.32';
+$HTMLTMPL::VERSION = '1.33';
 
 sub new()
 {
@@ -286,12 +287,7 @@ sub mergeData()
 		{
 			if ($seg =~ /__.*__/)			# Is it a token?
 			{
-				if ($seg =~ /^__i_.+__/)		# Invisible? If so, ignore.
-				{
-					next;
-				}
-
-				if ($seg =~ /^__x_.+__/)		# Repeating?
+				if ($seg =~ /^__[ix]_.+__/)		# Repeating?
 				{
 					chomp($seg);
 					# This is a repeating block rather than an individual token,
@@ -840,8 +836,14 @@ The code :
 
 =head1 HISTORY
 
- March 1999	Version 0.90	beta
  March 2000	Version 1.20	Added invisible template blocks
+ April 1999 - First cut
+ Sept. 1999 - Added strict.
+ March 2000 - 1.20 - Allow for invisible templates.
+ March 2001 - 1.30 - Added to CPAN
+ March 2001 - 1.31 - Added getAllTokens, and srcString methods.
+ Sept. 2001 - 1.32 - Reset $/ to prior value (courtesy)
+ Sept. 2001 - 1.33 - Corrected operation of Invisible blocks.
 
 =head1 AUTHOR
 

@@ -1,7 +1,8 @@
                       Bilstone HTML Template Parser
                       =============================
 
-26th September 2001	1.32	Coutesy change - restore value of $/ in src().
+4th October 2001	1.33	Corrected problem with embed invisible blocks.
+26th September 2001	1.32	Courtesy change - restore value of $/ in src().
 26th March 2001		1.31	Added getAllTokens and srcString methods.
 8th March 2001		1.30	Released to CPAN
 8th May 2000		1.11	Major speed improvement
