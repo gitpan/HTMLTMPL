@@ -15,7 +15,7 @@
 #			March 2001 - 1.30 - Added to CPAN
 #			March 2001 - 1.31 - Added getAllTokens, and srcString methods.
 #			Sept. 2001 - 1.32 - Reset $/ to prior value (courtesy)
-#			Sept. 2001 - 1.33 - Corrected operation of Invisible blocks.
+#			Oct.  2001 - 1.34 - Corrected operation of Invisible blocks.
 #
 
 package HTMLTMPL;
@@ -26,7 +26,7 @@ use Carp;
 
 no strict 'refs';
 
-$HTMLTMPL::VERSION = '1.33';
+$HTMLTMPL::VERSION = '1.34';
 
 sub new()
 {
@@ -287,7 +287,7 @@ sub mergeData()
 		{
 			if ($seg =~ /__.*__/)			# Is it a token?
 			{
-				if ($seg =~ /^__[ix]_.+__/)		# Repeating?
+				if ($seg =~ /^__x_.+__/)		# Repeating?
 				{
 					chomp($seg);
 					# This is a repeating block rather than an individual token,
